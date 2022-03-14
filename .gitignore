@@ -1,0 +1,6 @@
+/crud_backend/node_modules
+/crud_backend/node_modules/*
+/.idea
+/.idea/*
+/crud_frontend/node_modules
+/crud_frontend/node_modules/*
