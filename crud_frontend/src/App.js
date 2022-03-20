@@ -1,9 +1,12 @@
-import logo from './logo.svg';
 import './App.css';
 import Form from "./components/Form/Form";
 
 function App() {
-  return <Form />;
+  return (
+    <>
+      <link rel="shortcut icon" href="logo.svg" />
+      <Form />
+    </>);
 }
 
 export default App;

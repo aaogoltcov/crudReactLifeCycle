@@ -5,34 +5,54 @@ import Card from "../Card/Card";
 export default class Form extends Component {
     constructor(props) {
         super(props);
-        this.props = props;
         this.titleTemplate = "Название";
         this.textTemplate = "Какой-то текст...";
         this.state = {
             title: "",
             text: "",
             cards: [],
+            toggle: true,
         }
         this.request = new Note();
     }
 
     componentDidMount() {
-        this.renderListOfCards();
+        this.stateUpdate(true);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        this.renderListOfCards();
+        if (prevState.toggle !== this.state.toggle) { this.stateUpdate() };
     }
 
-    renderListOfCards() {
-        this.request.getNotes().then(response => this.setState({
-            cards: response.map(card => <Card
-                key={card.id}
-                title={card.title}
-                text={card.text}
-                func={this.deleteCard}
-            />)
-        }));
+    stateUpdate(toggle=false) {
+        const response = this.getData().then(response => { this.setState({cards: response}) });
+        if (toggle) {
+            response.then(() => { this.toggle() })
+        }
+    }
+
+    toggle = () => {
+        this.setState({toggle: !this.state.toggle});
+    }
+
+    getData() {
+        return this.request.getNotes().then(response => response
+            .map(card => ({
+                key: card.id,
+                title: card.title,
+                text: card.text,
+                func: this.deleteCard,
+            }))
+        );
+    }
+
+    renderListOfCards = () => {
+        return this.state.cards.map(card => <Card
+            key={card.key}
+            title={card.title}
+            text={card.text}
+            func={this.deleteCard}
+        />)
     }
 
     titleChangeHandler = e => this.setState({title: e.target.value});
@@ -42,13 +62,21 @@ export default class Form extends Component {
     buttonSubmitHandler = e => {
         if (this.state.title && this.state.text) {
             e.preventDefault();
-            this.request.postNote(this.state.title, this.state.text).then(r => console.log("POST: ", r.status));
-            this.clearForm();
+            this.request.postNote(this.state.title, this.state.text).then(r => {
+                if (r.status === 204) {
+                    this.toggle();
+                    this.clearForm();
+                }
+            });
         }
     };
 
     deleteCard = id => {
-        this.request.deleteNote(id).then(r => console.log("DELETE: ", r.status))
+        this.request.deleteNote(id).then(r => {
+            if (r.status === 204) {
+                this.toggle();
+            }
+        })
     };
 
     clearForm() {
@@ -93,7 +121,7 @@ export default class Form extends Component {
                     </button>
                 </form>
                 <div className="row crud-cards">
-                    {this.state.cards}
+                    {this.renderListOfCards()}
                 </div>
             </>
         );
