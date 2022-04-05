@@ -1,11 +1,11 @@
 import './App.css';
-import Form from "./components/Form/Form";
+import Container from "./components/Container/Container";
 
 function App() {
   return (
     <>
       <link rel="shortcut icon" href="logo.svg" />
-      <Form />
+      <Container />
     </>);
 }
 

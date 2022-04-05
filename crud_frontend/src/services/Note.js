@@ -1,6 +1,6 @@
 export default class Note {
     constructor() {
-        this.url = "http://localhost:4242/notes";
+        this.url = "http://localhost:4247/notes";
     }
 
     async getNotes() {

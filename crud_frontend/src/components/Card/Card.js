@@ -5,9 +5,9 @@ export default class Card extends Component {
         super(props);
     }
 
-    deleteCardHandler = e => {
-        e.preventDefault();
-        this.props.func(this._reactInternals.key);
+    deleteCardHandler(event) {
+        event.preventDefault();
+        this.props.deleteNote(this._reactInternals.key);
     }
 
     render() {
@@ -20,7 +20,7 @@ export default class Card extends Component {
                         <button
                             type="button"
                             className="btn btn-light"
-                            onClick={this.deleteCardHandler}
+                            onClick={this.deleteCardHandler.bind(this)}
                         >Удалить
                         </button>
                     </div>
